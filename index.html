@@ -11,8 +11,51 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
-    <!-- Fireworks JS -->
-    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.0.0/dist/index.bundle.js"></script>
+
+    <style>
+        /* Fireworks container */
+        #fireworks-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff6347;
+            border-radius: 50%;
+            opacity: 0;
+            animation: explode 2s ease-out infinite;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1) translate(0, 0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(2) translate(var(--x), var(--y));
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0;
+            }
+        }
+
+        /* More colors for the particles */
+        .firework:nth-child(1) { background-color: #ff6347; }
+        .firework:nth-child(2) { background-color: #ffcc00; }
+        .firework:nth-child(3) { background-color: #00ff00; }
+        .firework:nth-child(4) { background-color: #1e90ff; }
+        .firework:nth-child(5) { background-color: #ff1493; }
+
+    </style>
 </head>
 <body>
     <!-- Fireworks container -->
@@ -48,31 +91,38 @@
     </div>
 
     <!-- Background Music -->
-    <audio id="bg-music" autoplay loop>
-      <source src="totoro.mp3" type="audio/mp3">
-      Your browser does not support the audio element.
-  </audio>
-  
-    <!-- Fireworks Animation -->
+    <audio id="bg-music" loop>
+        <source src="totoro.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- JavaScript to Trigger Fireworks on Page Load -->
     <script>
-        // Wait for the document to load before initializing fireworks
-        document.addEventListener("DOMContentLoaded", function() {
-            const fireworks = new Fireworks.default({
-                target: document.getElementById('fireworks-container'),
-                particleCount: 50,
-                speed: 4,
-                angle: 90,
-                spread: 40,
-                colors: ['#ff6347', '#ffcc00', '#00ff00', '#1e90ff'],
-                brightness: 60,
-                opacity: 0.7,
-                delay: 10  // Added delay to stagger the fireworks effect
+        window.onload = function () {
+            const fireworksContainer = document.getElementById('fireworks-container');
+            const numFireworks = 30;
+
+            for (let i = 0; i < numFireworks; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                
+                // Set random initial position and animation delay
+                const x = Math.random() * 100 - 50 + 'vw';
+                const y = Math.random() * 100 - 50 + 'vh';
+                firework.style.setProperty('--x', x);
+                firework.style.setProperty('--y', y);
+                firework.style.animationDelay = `${Math.random() * 2}s`;
+
+                fireworksContainer.appendChild(firework);
+            }
+
+            // Listen for user interaction to start audio playback
+            document.body.addEventListener('click', function() {
+                const bgMusic = document.getElementById('bg-music');
+                bgMusic.play();  // Start playing the audio
+                bgMusic.volume = 1.0; // Set volume
             });
-            fireworks.start();
-            // Unmute the background music after page load
-            const bgMusic = document.getElementById('bg-music');
-            bgMusic.muted = false;
-        });
+        }
     </script>
 
     <!-- Bootstrap JS and dependencies -->
